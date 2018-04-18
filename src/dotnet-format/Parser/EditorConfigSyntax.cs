@@ -1,5 +1,6 @@
 ﻿using Sprache;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotNet.Format.Parser
 {
@@ -38,11 +39,11 @@ namespace DotNet.Format.Parser
 
     public sealed class EditorConfigDocumentSyntaxNode : EditorConfigSyntaxNode
     {
-        public EditorConfigDocumentSyntaxNode(IEnumerable<EditorConfigSyntaxNode> nodes) => (Nodes) = (nodes);
+        public EditorConfigDocumentSyntaxNode(IReadOnlyList<EditorConfigSyntaxNode> nodes) => (Nodes) = (nodes);
 
-        public IEnumerable<EditorConfigSyntaxNode> Nodes { get; }
+        public IReadOnlyList<EditorConfigSyntaxNode> Nodes { get; }
 
-        public override string ToString() => string.Join("\n", Nodes);
+        public override string ToString() => string.Join('\n', Nodes);
     }
 
     public static class EditorConfigDocumentGrammar
@@ -56,7 +57,7 @@ namespace DotNet.Format.Parser
             Parse.LetterOrDigit.Or(Parse.Char('_')).AtLeastOnce().Text();
 
         public static readonly Parser<string> PropertyValue =
-            Parse.LetterOrDigit.AtLeastOnce().Text();
+            Parse.AnyChar.Until(Parse.LineTerminator).Text();
 
         public static readonly Parser<EditorConfigPropertySyntaxNode> Property =
             (from name in PropertyName
@@ -72,7 +73,7 @@ namespace DotNet.Format.Parser
 
         public static readonly Parser<EditorConfigDocumentSyntaxNode> Document =
             from nodes in Comment.Or<EditorConfigSyntaxNode>(Section).Or(Property).Many()
-            select new EditorConfigDocumentSyntaxNode(nodes);
+            select new EditorConfigDocumentSyntaxNode(nodes.ToArray());
     }
 
     public static class EditorConfigSyntaxParser

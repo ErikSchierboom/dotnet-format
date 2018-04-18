@@ -1,15 +1,16 @@
 ﻿using DotNet.Format.Parser;
 using Newtonsoft.Json;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using Xunit;
 
 namespace DotNet.Format.Tests.Parser
 {
     public class EditorConfigParserTests
     {
-        private const string EditorConfigDocument = @"
+        [Fact]
+        public void ParsesDocumentWhenEditorConfigDocumentIsValid()
+        {
+            const string EditorConfigDocument = @"
 # This is the root editorconfig file
 root = true
 
@@ -23,21 +24,13 @@ csharp_prefer_braces = true:none
 csharp_style_throw_expression = false:suggestion
 ";
 
-        [Fact]
-        public void ParsesCorrectlyParserDocument()
-        {
-            var sut = new EditorConfigDocumentParser();
-
-            var x = sut.Parse("root = true");
-
-
-            var actual = sut.Parse(EditorConfigDocument);
+            var actual = EditorConfigDocumentParser.Parse(EditorConfigDocument);
 
             var expected = new EditorConfigDocument(
                 new[] { new EditorConfigProperty("root", "true") },
                 new[]
                 {
-                    new EditorConfigSection("*", 
+                    new EditorConfigSection("*",
                         new []
                         {
                             new EditorConfigProperty("indent_style", "space"),

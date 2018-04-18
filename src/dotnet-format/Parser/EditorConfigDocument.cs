@@ -1,23 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DotNet.Format.Parser
 {
     public sealed class EditorConfigDocument
     {
-        public EditorConfigDocument(IEnumerable<EditorConfigProperty> properties, IEnumerable<EditorConfigSection> sections)
+        public EditorConfigDocument(IReadOnlyList<EditorConfigProperty> properties, IReadOnlyList<EditorConfigSection> sections)
             => (Properties, Sections) = (properties, sections);
 
-        public IEnumerable<EditorConfigProperty> Properties { get; }
-        public IEnumerable<EditorConfigSection> Sections { get; }
+        public IReadOnlyList<EditorConfigProperty> Properties { get; }
+        public IReadOnlyList<EditorConfigSection> Sections { get; }
     }
 
     public sealed class EditorConfigSection
     {
-        public EditorConfigSection(string key, IEnumerable<EditorConfigProperty> properties)
+        public EditorConfigSection(string key, IReadOnlyList<EditorConfigProperty> properties)
             => (Name, Properties) = (key, properties);
 
         public string Name { get; }
-        public IEnumerable<EditorConfigProperty> Properties { get; }
+        public IReadOnlyList<EditorConfigProperty> Properties { get; }
+    }
+
+    public enum EditorConfigPropertySeverity
+    {
+        None = 0,
+        Silent,
+        Suggestion,
+        Warning,
+        Error
     }
 
     public sealed class EditorConfigProperty
@@ -38,43 +49,70 @@ namespace DotNet.Format.Parser
         }
     }
 
-    public enum EditorConfigPropertySeverity
+    public static class EditorConfigDocumentParser
     {
-        None = 0,
-        Silent,
-        Suggestion,
-        Warning,
-        Error
-    }
-
-    public class EditorConfigDocumentParser
-    {
-        public EditorConfigDocument Parse(string text)
+        public static EditorConfigDocument Parse(string text)
         {
             var editorConfigDocumentSyntaxNode = EditorConfigSyntaxParser.Parse(text);
 
-            return null;
+            string currentSection = null;
+            var sections = new List<EditorConfigSection>();
+            var rootProperties = new List<EditorConfigProperty>();
+            var currentProperties = new List<EditorConfigProperty>();
 
-            return new EditorConfigDocument(
-                new[] { new EditorConfigProperty("root", "true") },
-                new[]
+            var nodes = editorConfigDocumentSyntaxNode.Nodes;
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i] is EditorConfigSectionSyntaxNode sectionSyntaxNode)
                 {
-                    new EditorConfigSection("*",
-                        new []
-                        {
-                            new EditorConfigProperty("indent_style", "space"),
-                            new EditorConfigProperty("indent_size", "2")
-                        }),
-                    new EditorConfigSection("*.cs", new []
-                        {
-                            new EditorConfigProperty("indent_size", "4"),
-                            new EditorConfigProperty("csharp_prefer_braces", "true", EditorConfigPropertySeverity.None),
-                            new EditorConfigProperty("csharp_style_throw_expression", "false", EditorConfigPropertySeverity.Suggestion)
-                        })
+                    if (currentSection == null)
+                        rootProperties.AddRange(currentProperties.ToList());
+                    else
+                        sections.Add(new EditorConfigSection(currentSection, currentProperties.ToList()));
+
+                    currentSection = sectionSyntaxNode.Name;
+                    currentProperties.Clear();
                 }
-            );
+                else if (nodes[i] is EditorConfigPropertySyntaxNode propertySyntaxNode)
+                {
+                    currentProperties.Add(CreateEditorConfigProperty(propertySyntaxNode));
+                }
+                else
+                {
+                    continue;
+                }                    
+            }
+
+            if (currentSection == null)
+                rootProperties.AddRange(currentProperties);
+            else
+                sections.Add(new EditorConfigSection(currentSection, currentProperties));
+
+            return new EditorConfigDocument(rootProperties, sections);        }
+
+        private static EditorConfigProperty[] CreateEditorConfigProperties(IEnumerable<EditorConfigSyntaxNode> nodes)
+            => nodes.OfType<EditorConfigPropertySyntaxNode>().Select(CreateEditorConfigProperty).ToArray();
+
+        private static EditorConfigProperty CreateEditorConfigProperty(EditorConfigPropertySyntaxNode node)
+        {
+            var lastDoubleColonIndex = node.Value.LastIndexOf(':');
+            if (lastDoubleColonIndex == -1)
+                return new EditorConfigProperty(node.Name, node.Value);
+
+            var value = node.Value.Substring(0, lastDoubleColonIndex);
+            var severity = Enum.Parse<EditorConfigPropertySeverity>(node.Value.Substring(lastDoubleColonIndex + 1), true);
+            return new EditorConfigProperty(node.Name, value, severity);
         }
 
-        
+        private static ReadOnlySpan<EditorConfigSyntaxNode> GetSyntaxNodesForCurrentSection(ReadOnlySpan<EditorConfigSyntaxNode> nodes)
+        {
+            for (var i = 0; i < nodes.Length; i++)
+            {
+                if (nodes[i] is EditorConfigSectionSyntaxNode)
+                    return i == 0 ? ReadOnlySpan<EditorConfigSyntaxNode>.Empty : nodes.Slice(0, i);
+            }
+
+            return nodes;
+        }
     }
 }
