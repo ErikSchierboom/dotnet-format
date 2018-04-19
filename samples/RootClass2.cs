@@ -4,7 +4,7 @@ using System.Text;
 
 namespace csharp_sample
 {
-  class RootClass2
-  {
-  }
+class RootClass2
+{
+}
 }

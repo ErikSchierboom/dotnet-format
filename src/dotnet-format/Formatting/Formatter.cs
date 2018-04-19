@@ -1,5 +1,4 @@
-﻿using DotNet.Format.Helpers;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Diagnostics;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DotNet.Format.Formatting
 {
-    public class Formatter
+    public sealed class Formatter
     {
         private static readonly Document document = CreateDocument();
 
