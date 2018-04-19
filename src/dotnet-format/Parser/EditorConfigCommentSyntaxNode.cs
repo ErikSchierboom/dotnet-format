@@ -6,7 +6,5 @@
 
         public char Indicator { get; }
         public string Comment { get; }
-
-        public override string ToString() => $"{Indicator}{Comment}";
     }
 }

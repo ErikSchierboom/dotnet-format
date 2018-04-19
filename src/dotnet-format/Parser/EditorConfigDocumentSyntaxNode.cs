@@ -7,7 +7,5 @@ namespace DotNet.Format.Parser
         public EditorConfigDocumentSyntaxNode(IReadOnlyList<EditorConfigSyntaxNode> nodes) => (Nodes) = (nodes);
 
         public IReadOnlyList<EditorConfigSyntaxNode> Nodes { get; }
-
-        public override string ToString() => string.Join('\n', Nodes);
     }
 }

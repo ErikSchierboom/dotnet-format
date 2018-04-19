@@ -1,6 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using DotNet.Format.Helpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -24,15 +26,20 @@ namespace DotNet.Format.Formatting
         public async Task FormatAllFiles(CancellationToken cancellationToken = default)
         {
             var sourceFiles = new SourceFileCollection(root);
-            await Task.WhenAll(sourceFiles.Select(sourceFile => FormatSingleFile(sourceFile, cancellationToken)));
 
-            Console.WriteLine($"Formatted {sourceFiles.Count()} file(s)");
+            var stopwatch = Stopwatch.StartNew();
+            await Task.WhenAll(sourceFiles.Select(sourceFile => FormatSingleFile(sourceFile, cancellationToken)));
+            stopwatch.Stop();
+
+            Console.WriteLine($"Formatted {sourceFiles.Count()} file(s) in {(int)stopwatch.Elapsed.TotalMilliseconds}ms");
         }
 
         public async Task FormatSingleFile(FileInfo file, CancellationToken cancellationToken = default)
         {
             var editorConfigDocument = editorConfigDocuments.GetForFile(file);
             var formattingOptions = FormattingOptions.Create(file, editorConfigDocument);
+
+            var stopwatch = Stopwatch.StartNew();
 
             using (var fileStream = file.Open(FileMode.Open, FileAccess.ReadWrite))
             using (var fileWriter = new StreamWriter(fileStream))
@@ -46,7 +53,9 @@ namespace DotNet.Format.Formatting
                 fileStream.SetLength(0);
                 formattedText.Write(fileWriter, cancellationToken);
 
-                Console.WriteLine($"Formatted .{Path.DirectorySeparatorChar}{file.FullName.Substring(root.FullName.Length + 1)}");
+                stopwatch.Stop();
+
+                Console.WriteLine($"Formatted .{Path.DirectorySeparatorChar}{file.FullName.Substring(root.FullName.Length + 1)} in {(int)stopwatch.Elapsed.TotalMilliseconds}ms");
             }
         }
 

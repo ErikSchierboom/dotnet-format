@@ -1,4 +1,5 @@
-﻿using DotNet.Format.Parser;
+﻿using DotNet.Format.Helpers;
+using DotNet.Format.Parser;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

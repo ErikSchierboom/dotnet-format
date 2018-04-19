@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DotNet.Format
+namespace DotNet.Format.Helpers
 {
     public sealed class GlobbedFiles : IEnumerable<FileInfo>
     {
