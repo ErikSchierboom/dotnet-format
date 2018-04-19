@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace DotNet.Format
+﻿namespace DotNet.Format
 {
     public sealed class EditorConfigSection
     {
-        public EditorConfigSection(string key, IReadOnlyList<EditorConfigProperty> properties)
+        public EditorConfigSection(string key, EditorConfigPropertyCollection properties)
             => (Name, Properties) = (key, properties);
 
         public string Name { get; }
-        public IReadOnlyList<EditorConfigProperty> Properties { get; }
+        public EditorConfigPropertyCollection Properties { get; }
     }
 }

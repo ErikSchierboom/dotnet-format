@@ -62,8 +62,10 @@ namespace DotNet.Format.Formatting
                 return new FormattingOptions();
 
             var editorConfigProperties = editorConfigDocument
-                .GetMergedMatchingProperties(file.Name)
-                .ToDictionary(property => property.Name, property => property.Value);
+                .Sections
+                .Where(section => Glob.Glob.IsMatch(file.Name, section.Name))
+                .Select(section => section.Properties)
+                .Aggregate(EditorConfigPropertyCollection.Empty, (acc, properties) => acc.Merge(properties));
 
             return new FormattingOptions().WithEditorConfigProperties(editorConfigProperties);
         }        

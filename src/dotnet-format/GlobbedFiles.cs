@@ -1,19 +1,25 @@
 ﻿using Glob;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DotNet.Format
 {
-    public class GlobbedFiles : IEnumerable<FileInfo>
+    public sealed class GlobbedFiles : IEnumerable<FileInfo>
     {
-        private readonly DirectoryInfo root;
-        private readonly string globbingPattern;
+        private readonly IEnumerable<FileInfo> files;
 
-        public GlobbedFiles(DirectoryInfo root, string globbingPattern) 
-            => (this.root, this.globbingPattern) = (root, globbingPattern);
+        public GlobbedFiles(DirectoryInfo root, string includePattern, string excludePattern = null)
+        {
+            var included = root.GlobFiles(includePattern);
+            var excluded = excludePattern == null ? Array.Empty<FileSystemInfo>() : root.GlobFileSystemInfos(excludePattern);
 
-        public IEnumerator<FileInfo> GetEnumerator() => root.GlobFiles(globbingPattern).GetEnumerator();
+            files = included.Where(file => !excluded.Any(exclude => file.FullName.StartsWith(exclude.FullName)));
+        }
+
+        public IEnumerator<FileInfo> GetEnumerator() => files.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

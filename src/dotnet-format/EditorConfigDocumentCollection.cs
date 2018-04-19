@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DotNet.Format.Formatting
+namespace DotNet.Format
 {
     public sealed class EditorConfigDocumentCollection : IEnumerable<FileInfo>
     {
@@ -44,6 +44,9 @@ namespace DotNet.Format.Formatting
                     editorConfigDocuments.Add(editorConfigDocument);
                     editorConfigDocumentsPerDirectory[currentDirectory.FullName] = editorConfigDocument;
                 }
+
+                if (editorConfigDocument != null && editorConfigDocument.IsRoot)
+                    break;
 
                 currentDirectory = currentDirectory.Parent;
             } while (currentDirectory.FullName.StartsWith(root.FullName));

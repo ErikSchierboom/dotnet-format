@@ -23,7 +23,7 @@ namespace DotNet.Format.Parser
                     if (currentSection == null)
                         rootProperties.AddRange(currentProperties.ToList());
                     else
-                        sections.Add(new EditorConfigSection(currentSection, currentProperties.ToList()));
+                        sections.Add(new EditorConfigSection(currentSection, new EditorConfigPropertyCollection(currentProperties.ToList())));
 
                     currentSection = sectionSyntaxNode.Name;
                     currentProperties.Clear();
@@ -41,9 +41,9 @@ namespace DotNet.Format.Parser
             if (currentSection == null)
                 rootProperties.AddRange(currentProperties);
             else
-                sections.Add(new EditorConfigSection(currentSection, currentProperties));
+                sections.Add(new EditorConfigSection(currentSection, new EditorConfigPropertyCollection(currentProperties.ToList())));
 
-            return new EditorConfigDocument(rootProperties, sections);
+            return new EditorConfigDocument(new EditorConfigPropertyCollection(rootProperties), new EditorConfigSectionCollection(sections));
         }
 
         private static EditorConfigProperty[] CreateEditorConfigProperties(IEnumerable<EditorConfigSyntaxNode> nodes)

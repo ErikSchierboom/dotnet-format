@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DotNet.Format.Formatting
@@ -9,7 +11,9 @@ namespace DotNet.Format.Formatting
         {
             var editorConfigDocuments = new EditorConfigDocumentCollection(root);
 
-            foreach (var csharpFile in new CSharpFileCollection(root))
+            var csharpFiles = new CSharpFileCollection(root);
+
+            foreach (var csharpFile in csharpFiles)
             {
                 var editorConfigDocument = editorConfigDocuments.GetForFile(csharpFile);
                 var formattingOptions = FormattingOptions.Create(csharpFile, editorConfigDocument);
@@ -17,6 +21,8 @@ namespace DotNet.Format.Formatting
             }
 
             // TODO: do bulk change Task.WhenAll
+
+            Console.WriteLine($"Formatted {csharpFiles.Count()} file(s)");
         }
     }
 }
