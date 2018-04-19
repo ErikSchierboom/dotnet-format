@@ -17,13 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp-sample", "samples\cs
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "vb-sample", "samples\vb-sample\vb-sample.vbproj", "{808D8BE7-E01B-4A26-BD08-34E53E45B3F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D05E31C5-43A9-4E47-8958-8A810EF55D29}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitignore = .gitignore
-		re-install.cmd = re-install.cmd
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

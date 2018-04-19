@@ -1,56 +1,56 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using DotNet.Format.Formatting;
 using DotNet.Format.Parser;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Text;
+using Glob;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DotNet.Format
 {
-    class Program
+    internal sealed class Program
     {
         private const string CSharpFilePath = @"C:\Code\playground\hackdays\2018-1\dotnet-format\samples\csharp-sample\Class1.cs";
-        private const string EditorConfigFilePath = @"C:\Code\playground\hackdays\2018-1\dotnet-format\.editorconfig";
+        private const string EditorConfigFilePath = @"C:\Code\playground\hackdays\2018-1\dotnet-format\samples\csharp-sample\.editorconfig";
 
-        static async Task Main(string[] args)
+        internal static async Task Main(string[] args)
         {
-            var text = File.ReadAllText(CSharpFilePath);
-            var sourceText = SourceText.From(text);
+            var editorConfigDocument = ParseEditorConfigDocument();
+          
+            var root = GetRootDirectory();
+            var options = GetProgramOptions();
 
-            var editorConfigText = File.ReadAllText(EditorConfigFilePath);
-            var editorConfigSourceText = SourceText.From(editorConfigText);
+            //foreach (var file in new FormattingFiles(root, options.GlobbingPattern))
 
-            var x = EditorConfigDocumentParser.Parse(editorConfigText);
-            Console.WriteLine(x);
+            var file = new FileInfo(CSharpFilePath);
+            var formattingOptions = FormattingOptions.Create(file, editorConfigDocument);
 
-            ////Document document = default;
-            ////var x = document.WithText(sourceText);
-
-
-            //ProjectId projectId = ProjectId.CreateNewId();
-            //DocumentId documentId = DocumentId.CreateNewId(projectId);
-
-            //Solution solution = new AdhocWorkspace().CurrentSolution
-            //      .AddProject(projectId, "TestProject", "TestProject", LanguageNames.CSharp)
-            //      .AddDocument(DocumentId.CreateNewId(projectId), ".editorconfig", editorConfigSourceText)
-            //      .AddDocument(documentId, "Class1.cs", sourceText);
-            //Document document = solution.GetDocument(documentId);
-
-            //var y = await Formatter.FormatAsync(document);
-
-            //var z = await y.GetTextAsync();
-            //Console.WriteLine(z);
-
-            //Formatter.FormatAsync()
-
-            //      Console.WriteLine("Hello World!");
+            await Formatter.Format(file, formattingOptions);
         }
 
-        //private SyntaxNode Format(Document document)
-        //{
-        //  Document updatedDocument = document.WithSyntaxRoot(document.GetSyntaxRootAsync().Result);
-        //  return Formatter.FormatAsync(Simplifier.ReduceAsync(updatedDocument, Simplifier.Annotation).Result, Formatter.Annotation).Result.GetSyntaxRootAsync().Result;
-        //}
+        private static DirectoryInfo GetRootDirectory() => new DirectoryInfo(Directory.GetCurrentDirectory());
+
+        private static ProgramOptions GetProgramOptions() => new ProgramOptions();
+
+        private static EditorConfigDocument ParseEditorConfigDocument() => EditorConfigDocumentParser.Parse(File.ReadAllText(EditorConfigFilePath));
+    }
+
+    public sealed class ProgramOptions
+    {
+        public string GlobbingPattern { get; set; } = "**/*.cs";
+    }
+
+    public class FormattingFiles : IEnumerable<FileInfo>
+    {
+        private readonly DirectoryInfo root;
+        private readonly string globbingPattern;
+
+        public FormattingFiles(DirectoryInfo root, string globbingPattern) 
+            => (this.root, this.globbingPattern) = (root, globbingPattern);
+
+        public IEnumerator<FileInfo> GetEnumerator() => root.GlobFiles(globbingPattern).Where(file => file.Extension == ".cs").GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
