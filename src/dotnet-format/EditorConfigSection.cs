@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DotNet.Format.Parser
+namespace DotNet.Format
 {
     public sealed class EditorConfigSection
     {

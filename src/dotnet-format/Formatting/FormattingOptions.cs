@@ -1,5 +1,4 @@
-﻿using DotNet.Format.Parser;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 namespace DotNet.Format.Formatting
@@ -59,6 +58,9 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions Create(FileInfo file, EditorConfigDocument editorConfigDocument)
         {
+            if (editorConfigDocument == null)
+                return new FormattingOptions();
+
             var editorConfigProperties = editorConfigDocument
                 .GetMergedMatchingProperties(file.Name)
                 .ToDictionary(property => property.Name, property => property.Value);

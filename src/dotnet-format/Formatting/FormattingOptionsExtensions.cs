@@ -129,7 +129,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInTypes(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInTypes = enabled.Contains("types", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -137,7 +137,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInMethods(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInMethods = enabled.Contains("methods", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -145,7 +145,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInProperties(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInProperties = enabled.Contains("properties", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -153,7 +153,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInAccessors(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInAccessors = enabled.Contains("accessors", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -161,7 +161,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInAnonymousMethods(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInAnonymousMethods = enabled.Contains("anonymous_methods", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -169,7 +169,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInControlBlocks(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInControlBlocks = enabled.Contains("control_blocks", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -177,7 +177,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInAnonymousTypes(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInAnonymousTypes = enabled.Contains("anonymous_types", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -185,7 +185,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInObjectCollectionArrayInitializers(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInObjectCollectionArrayInitializers = enabled.Contains("object_collection", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;
@@ -193,7 +193,7 @@ namespace DotNet.Format.Formatting
 
         public static FormattingOptions WithNewLinesForBracesInLambdaExpressionBody(this FormattingOptions formattingOptions, Dictionary<string, string> editorConfigProperties)
         {
-            if (editorConfigProperties.TryGetValue("csharp_new_line_between_query_expression_clauses", out var enabled))
+            if (editorConfigProperties.TryGetValue("csharp_new_line_before_open_brace", out var enabled))
                 formattingOptions.NewLinesForBracesInLambdaExpressionBody = enabled.Contains("lambdas", StringComparison.OrdinalIgnoreCase);
 
             return formattingOptions;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DotNet.Format.Parser.Syntax
+namespace DotNet.Format.Parser
 {
     public sealed class EditorConfigDocumentSyntaxNode : EditorConfigSyntaxNode
     {

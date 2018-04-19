@@ -1,5 +1,4 @@
-﻿using DotNet.Format.Parser.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,7 +35,7 @@ namespace DotNet.Format.Parser
                 else
                 {
                     continue;
-                }                    
+                }
             }
 
             if (currentSection == null)
@@ -44,7 +43,8 @@ namespace DotNet.Format.Parser
             else
                 sections.Add(new EditorConfigSection(currentSection, currentProperties));
 
-            return new EditorConfigDocument(rootProperties, sections);        }
+            return new EditorConfigDocument(rootProperties, sections);
+        }
 
         private static EditorConfigProperty[] CreateEditorConfigProperties(IEnumerable<EditorConfigSyntaxNode> nodes)
             => nodes.OfType<EditorConfigPropertySyntaxNode>().Select(CreateEditorConfigProperty).ToArray();

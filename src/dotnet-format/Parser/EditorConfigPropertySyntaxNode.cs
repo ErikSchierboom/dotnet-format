@@ -1,4 +1,4 @@
-﻿namespace DotNet.Format.Parser.Syntax
+﻿namespace DotNet.Format.Parser
 {
     public sealed class EditorConfigPropertySyntaxNode : EditorConfigSyntaxNode
     {

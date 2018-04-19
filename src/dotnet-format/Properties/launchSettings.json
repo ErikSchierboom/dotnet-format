@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dotnet-format": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Code\\playground\\hackdays\\2018-1\\dotnet-format\\samples"
+    }
+  }
+}

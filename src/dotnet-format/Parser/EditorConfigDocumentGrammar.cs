@@ -1,7 +1,7 @@
 ﻿using Sprache;
 using System.Linq;
 
-namespace DotNet.Format.Parser.Syntax
+namespace DotNet.Format.Parser
 {
     public static class EditorConfigDocumentGrammar
     {
