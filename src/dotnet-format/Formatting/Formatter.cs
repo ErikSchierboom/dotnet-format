@@ -1,17 +1,39 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DotNet.Format.Formatting
 {
-    public static class Formatter
+    public class Formatter
     {
         private static readonly Document document = CreateDocument();
-        
-        public static async Task Format(FileInfo file, FormattingOptions formattingOptions, CancellationToken cancellationToken = default)
+
+        private readonly EditorConfigDocumentCollection editorConfigDocuments;
+        private readonly DirectoryInfo root;
+
+        public Formatter(DirectoryInfo root)
         {
+            editorConfigDocuments = new EditorConfigDocumentCollection(root);
+            this.root = root;
+        }
+        
+        public async Task FormatAllFiles(CancellationToken cancellationToken = default)
+        {
+            var sourceFiles = new SourceFileCollection(root);
+            await Task.WhenAll(sourceFiles.Select(sourceFile => FormatSingleFile(sourceFile, cancellationToken)));
+
+            Console.WriteLine($"Formatted {sourceFiles.Count()} file(s)");
+        }
+
+        public async Task FormatSingleFile(FileInfo file, CancellationToken cancellationToken = default)
+        {
+            var editorConfigDocument = editorConfigDocuments.GetForFile(file);
+            var formattingOptions = FormattingOptions.Create(file, editorConfigDocument);
+
             using (var fileStream = file.Open(FileMode.Open, FileAccess.ReadWrite))
             using (var fileWriter = new StreamWriter(fileStream))
             {
@@ -23,6 +45,8 @@ namespace DotNet.Format.Formatting
 
                 fileStream.SetLength(0);
                 formattedText.Write(fileWriter, cancellationToken);
+
+                Console.WriteLine($"Formatted .{Path.DirectorySeparatorChar}{file.FullName.Substring(root.FullName.Length + 1)}");
             }
         }
 

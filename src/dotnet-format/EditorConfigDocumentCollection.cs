@@ -1,5 +1,6 @@
 ﻿using DotNet.Format.Parser;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,14 +12,14 @@ namespace DotNet.Format
         private readonly DirectoryInfo root;
         private readonly GlobbedFiles files;
         private readonly Dictionary<string, FileInfo> filesByDirectory;
-        private readonly Dictionary<string, EditorConfigDocument> editorConfigDocumentsPerDirectory;
+        private readonly ConcurrentDictionary<string, EditorConfigDocument> editorConfigDocumentsPerDirectory;
 
         public EditorConfigDocumentCollection(DirectoryInfo root)
         {
             this.root = root;
             files = new GlobbedFiles(root, "**/*.editorconfig");
             filesByDirectory = files.ToDictionary(file => file.DirectoryName);
-            editorConfigDocumentsPerDirectory = new Dictionary<string, EditorConfigDocument>();
+            editorConfigDocumentsPerDirectory = new ConcurrentDictionary<string, EditorConfigDocument>();
         }
 
         public EditorConfigDocument GetForFile(FileInfo file)
@@ -42,7 +43,7 @@ namespace DotNet.Format
                 {
                     editorConfigDocument = EditorConfigDocumentParser.Parse(File.ReadAllText(editorConfigFile.FullName));
                     editorConfigDocuments.Add(editorConfigDocument);
-                    editorConfigDocumentsPerDirectory[currentDirectory.FullName] = editorConfigDocument;
+                    editorConfigDocumentsPerDirectory.TryAdd(currentDirectory.FullName, editorConfigDocument);
                 }
 
                 if (editorConfigDocument != null && editorConfigDocument.IsRoot)

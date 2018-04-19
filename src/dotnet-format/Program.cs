@@ -6,8 +6,7 @@ namespace DotNet.Format
 {
     internal sealed class Program
     {
-        internal static async Task Main() 
-            => await GlobbingFormatter.Format(GetCurrentDirectory());
+        internal static async Task Main() => await new Formatter(GetCurrentDirectory()).FormatAllFiles();
 
         private static DirectoryInfo GetCurrentDirectory() => new DirectoryInfo(Directory.GetCurrentDirectory());        
     }
