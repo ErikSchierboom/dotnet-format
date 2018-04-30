@@ -1,5 +1,5 @@
 ﻿using DotNet.Format.Parser;
-using Newtonsoft.Json;
+using KellermanSoftware.CompareNetObjects;
 using Xunit;
 
 namespace DotNet.Format.Tests.Parser
@@ -46,7 +46,10 @@ csharp_style_throw_expression = false
                     )
                 })
             );
-            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
+
+            var compareLogic = new CompareLogic();
+            var result = compareLogic.Compare(actual, expected);
+            Assert.True(result.AreEqual, result.DifferencesString);
         }
     }
 }
