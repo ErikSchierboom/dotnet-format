@@ -5,16 +5,14 @@ using System.Linq;
 
 namespace DotNet.Format
 {
-    public sealed class EditorConfigSectionCollection : IEnumerable<EditorConfigSection>
+    public sealed class EditorConfigSectionCollection : IReadOnlyCollection<EditorConfigSection>
     {
         public static readonly EditorConfigSectionCollection Empty = new EditorConfigSectionCollection(Array.Empty<EditorConfigSection>());
 
-        private readonly IEnumerable<EditorConfigSection> sections;
+        private readonly IReadOnlyCollection<EditorConfigSection> sections;
 
-        public EditorConfigSectionCollection(IEnumerable<EditorConfigSection> sections)
-        {
-            this.sections = sections;
-        }
+        public EditorConfigSectionCollection(IEnumerable<EditorConfigSection> sections) 
+            => this.sections = sections.ToArray();
 
         public EditorConfigSectionCollection Merge(EditorConfigSectionCollection other)
         {   
@@ -39,6 +37,8 @@ namespace DotNet.Format
 
             return new EditorConfigSectionCollection(mergedSections);
         }
+
+        public int Count => sections.Count;
 
         public IEnumerator<EditorConfigSection> GetEnumerator() => sections.GetEnumerator();
 

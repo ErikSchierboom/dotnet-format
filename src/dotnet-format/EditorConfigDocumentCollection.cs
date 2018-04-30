@@ -8,17 +8,17 @@ using System.Linq;
 
 namespace DotNet.Format
 {
-    public sealed class EditorConfigDocumentCollection : IEnumerable<FileInfo>
+    public sealed class EditorConfigDocumentCollection : IReadOnlyCollection<FileInfo>
     {
         private readonly DirectoryInfo root;
-        private readonly GlobbedFiles files;
+        private readonly IReadOnlyCollection<FileInfo> files;
         private readonly Dictionary<string, FileInfo> filesByDirectory;
         private readonly ConcurrentDictionary<string, EditorConfigDocument> editorConfigDocumentsPerDirectory;
-
+        
         public EditorConfigDocumentCollection(DirectoryInfo root)
         {
             this.root = root;
-            files = new GlobbedFiles(root, "**/*.editorconfig");
+            files = new GlobbedFiles(root, "**/*.editorconfig").ToArray();
             filesByDirectory = files.ToDictionary(file => file.DirectoryName);
             editorConfigDocumentsPerDirectory = new ConcurrentDictionary<string, EditorConfigDocument>();
         }
@@ -55,6 +55,8 @@ namespace DotNet.Format
 
             return editorConfigDocuments;
         }
+
+        public int Count => files.Count;
 
         public IEnumerator<FileInfo> GetEnumerator() => files.GetEnumerator();
 

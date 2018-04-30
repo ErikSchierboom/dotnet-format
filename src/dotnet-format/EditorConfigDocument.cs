@@ -1,4 +1,6 @@
-﻿namespace DotNet.Format
+﻿using System.Linq;
+
+namespace DotNet.Format
 {
     public sealed class EditorConfigDocument
     {
@@ -10,7 +12,7 @@
         public EditorConfigPropertyCollection Properties { get; }
         public EditorConfigSectionCollection Sections { get; }
 
-        public bool IsRoot => Properties.TryGetValue("root", out var root) && bool.TryParse(root, out var isRoot) && isRoot;
+        public bool IsRoot => Properties.Any(property => property.Name == "root" && property.Value == "true");
 
         public EditorConfigDocument Merge(EditorConfigDocument other) 
             => new EditorConfigDocument(Properties.Merge(other.Properties), Sections.Merge(other.Sections));
